@@ -5,7 +5,6 @@ import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
 import { Playfair_Display } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
-import { useSearchParams } from "next/navigation"
 import { Suspense, useState, useEffect } from "react"
 import { LoadingProvider } from "@/contexts/loading-context"
 import { LoadingScreen } from "@/components/loading-screen"
@@ -22,7 +21,6 @@ export default function ClientLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const searchParams = useSearchParams()
   const [isInitialLoading, setIsInitialLoading] = useState(true)
 
   useEffect(() => {
@@ -35,17 +33,13 @@ export default function ClientLayout({
   }, [])
 
   return (
-    <html lang="en">
-      <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable} ${playfair.variable}`}>
-        <LoadingProvider>
-          <LoadingScreen 
-            isLoading={isInitialLoading} 
-            onLoadingComplete={() => setIsInitialLoading(false)} 
-          />
-          <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
-          <Analytics />
-        </LoadingProvider>
-      </body>
-    </html>
+    <LoadingProvider>
+      <LoadingScreen 
+        isLoading={isInitialLoading} 
+        onLoadingComplete={() => setIsInitialLoading(false)} 
+      />
+      <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+      <Analytics />
+    </LoadingProvider>
   )
 }
